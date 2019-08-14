@@ -17,8 +17,8 @@ const init =  () =>{
     .setGraphical(true);
 
 
-    const compute = gpu.createKernel(function(input) {
-        return input[this.thread.x][this.thread.y]/2.0;
+    const compute = gpu.createKernel(function(input, size) {
+        return input[(this.thread.y+1%size)][(this.thread.x+1) % size];
     }, {
         output: [size, size],
         pipeline: true,
@@ -32,7 +32,7 @@ const init =  () =>{
     render(texture);
 
     setInterval(()=>{
-        texture = compute(texture);
+        texture = compute(texture, size);
         render(texture);
     }, 1000);
     document.body.appendChild(render.canvas);
